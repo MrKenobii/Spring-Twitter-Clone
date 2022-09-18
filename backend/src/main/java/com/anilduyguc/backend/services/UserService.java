@@ -2,6 +2,7 @@ package com.anilduyguc.backend.services;
 
 import com.anilduyguc.backend.exceptions.EmailAlreadyTakenException;
 import com.anilduyguc.backend.exceptions.EmailFailedToSendException;
+import com.anilduyguc.backend.exceptions.IncorrectVerificationCodeException;
 import com.anilduyguc.backend.exceptions.UserDoesNotExistException;
 import com.anilduyguc.backend.models.AppUser;
 import com.anilduyguc.backend.models.RegistrationObject;
@@ -9,6 +10,7 @@ import com.anilduyguc.backend.models.Role;
 import com.anilduyguc.backend.repositories.RoleRepository;
 import com.anilduyguc.backend.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -19,6 +21,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final MailService mailService;
+    private final PasswordEncoder passwordEncoder;
 
     public AppUser registerUser(RegistrationObject registrationObject){
         AppUser user = new AppUser();
@@ -77,5 +80,22 @@ public class UserService {
 
     private Long generateVerificationNumber() {
         return (long) Math.floor(Math.random() * 100_000_000);
+    }
+
+    public AppUser verifyEmail(String username, Long code) {
+        AppUser user = userRepository.findByUsername(username).orElseThrow(UserDoesNotExistException::new);
+        if(code.equals(user.getVerification())){
+            user.setEnabled(true);
+            user.setVerification(null);
+            return userRepository.save(user);
+        }
+        throw new IncorrectVerificationCodeException();
+    }
+
+    public AppUser setPassword(String username, String password) {
+        AppUser user = userRepository.findByUsername(username).orElseThrow(UserDoesNotExistException::new);
+        String encodingPassword = passwordEncoder.encode(password);
+        user.setPassword(encodingPassword);
+        return userRepository.save(user);
     }
 }

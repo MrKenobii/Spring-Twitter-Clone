@@ -1,6 +1,7 @@
 package com.anilduyguc.backend.controllers;
 
 import com.anilduyguc.backend.exceptions.EmailAlreadyTakenException;
+import com.anilduyguc.backend.exceptions.IncorrectVerificationCodeException;
 import com.anilduyguc.backend.exceptions.UserDoesNotExistException;
 import com.anilduyguc.backend.models.AppUser;
 import com.anilduyguc.backend.models.RegistrationObject;
@@ -48,7 +49,22 @@ public class AuthenticationController {
         userService.generateEmailVerification(body.get("username"));
         return new ResponseEntity<String>("Verification code generated, email sent", HttpStatus.OK);
     }
-
+    @ExceptionHandler({IncorrectVerificationCodeException.class})
+    public ResponseEntity<String> incorrectCodeHandler(){
+        return new ResponseEntity<String>("The code provided does not match the users code", HttpStatus.CONFLICT);
+    }
+    @PostMapping("/email/verify")
+    public AppUser verifyEmail(@RequestBody LinkedHashMap<String, String> body){
+        Long code = Long.parseLong(body.get("code"));
+        String username = body.get("username");
+        return userService.verifyEmail(username, code);
+    }
+    @PutMapping("/update/password")
+    public AppUser updatePassword(@RequestBody LinkedHashMap<String, String> body){
+        String username = body.get("username");
+        String password = body.get("password");
+        return userService.setPassword(username, password);
+    }
 
 
 }
