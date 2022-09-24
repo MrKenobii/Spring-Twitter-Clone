@@ -13,5 +13,5 @@ export const determineLabelColor = (props: StyledInputProps) : string => {
     if(color && color === 'error') return theme.colors.error;
     if(color && color === 'blue') return theme.colors.blue;
 
-    return theme.colors.error;
+    return theme.colors.gray;
 }
