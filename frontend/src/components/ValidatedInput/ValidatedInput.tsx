@@ -2,6 +2,7 @@ import React from "react";
 import { StyledInputBox, StyledInputLabel} from "./StyledInput";
 import './ValidatedInput.css';
 import {ValidatedInputState} from "../../utils/GlobalInterfaces";
+import {determineValidatedStyles} from "../../utils/DetermineStyleUtils";
 
 interface ValidatedUserInputProps {
     name: string;
@@ -21,6 +22,9 @@ export const ValidatedInput:React.FC<ValidatedUserInputProps> = ({name, label, e
         labelColor: 'gray',
         value: '',
     });
+    React.useEffect(() => {
+        setValidatedState(determineValidatedStyles(validatedState, validator));
+    }, [validatedState.active, validatedState.typedIn, validatedState.value, validatedState.labelActive, validatedState.labelColor]);
     const focus = (e:React.FocusEvent<HTMLInputElement>):void => {
         setValidatedState({
             ...validatedState,
@@ -42,7 +46,7 @@ export const ValidatedInput:React.FC<ValidatedUserInputProps> = ({name, label, e
                 <StyledInputLabel color={validatedState.labelColor} active={validatedState.labelActive} valid={validatedState.valid}>{label}</StyledInputLabel>
                 <input className="validated-input-value" onFocus={focus} onBlur={focus} onChange={updateValue} {...attributes} />
             </StyledInputBox>
-            <span>{errorMessage}</span>
+            {!validatedState.valid ? <span>{errorMessage}</span> : <></>}
         </div>
     )
 }
