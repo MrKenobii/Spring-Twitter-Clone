@@ -3,6 +3,7 @@ import { StyledInputBox, StyledInputLabel} from "./StyledInput";
 import './ValidatedInput.css';
 import {ValidatedInputState} from "../../utils/GlobalInterfaces";
 import {determineValidatedStyles} from "../../utils/DetermineStyleUtils";
+import {log} from "util";
 
 interface ValidatedUserInputProps {
     name: string;
@@ -28,7 +29,8 @@ export const ValidatedInput:React.FC<ValidatedUserInputProps> = ({name, label, e
     const focus = (e:React.FocusEvent<HTMLInputElement>):void => {
         setValidatedState({
             ...validatedState,
-            active: !validatedState?.active,
+            active: !validatedState.active,
+            labelActive: !validatedState.labelActive
         });
     }
     const updateValue = (e: React.ChangeEvent<HTMLInputElement>):void => {
@@ -43,7 +45,7 @@ export const ValidatedInput:React.FC<ValidatedUserInputProps> = ({name, label, e
     return (
         <div className="validated-input">
             <StyledInputBox active={validatedState.active} valid={validatedState.valid}>
-                <StyledInputLabel color={validatedState.labelColor} active={validatedState.labelActive} valid={validatedState.valid}>{label}</StyledInputLabel>
+                <StyledInputLabel style={{color: validatedState.labelColor}}  active={validatedState.labelActive} valid={validatedState.valid}>{label}</StyledInputLabel>
                 <input className="validated-input-value" onFocus={focus} onBlur={focus} onChange={updateValue} {...attributes} />
             </StyledInputBox>
             {!validatedState.valid ? <span>{errorMessage}</span> : <></>}

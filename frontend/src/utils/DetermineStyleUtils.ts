@@ -12,7 +12,6 @@ export const determineLabelColor = (props: StyledInputProps) : string => {
     let { active, valid ,theme, color} = props;
     if(color && color === 'error') return theme.colors.error;
     if(color && color === 'blue') return theme.colors.blue;
-
     return theme.colors.gray;
 }
 
@@ -22,7 +21,7 @@ export const determineValidatedStyles = (state: ValidatedInputState, validator: 
         valid = validator(value);
         if(active && valid){
             labelActive = true;
-            labelColor = 'blue';
+            labelColor = '#1DA1F1';
         }
         if(active && !valid){
             labelActive=true;
@@ -30,18 +29,18 @@ export const determineValidatedStyles = (state: ValidatedInputState, validator: 
         }
         if(!active && valid){
             labelActive=true;
-            labelColor="gray";
+            labelColor="#7F7E7F";
         }
         if(!active && !valid){
             labelActive = false;
-            labelColor="gray";
+            labelColor="#7F7E7F";
         } else {
             if(active){
                 labelActive=true;
-                labelColor="blue";
+                labelColor="#1DA1F1";
             } else {
                 labelActive=false;
-                labelColor="gray";
+                labelColor="#7F7E7F";
             }
         }
     }
