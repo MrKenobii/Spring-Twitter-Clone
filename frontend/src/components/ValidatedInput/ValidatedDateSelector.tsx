@@ -1,5 +1,6 @@
 import React from "react";
 import {StyledInputBox, StyledInputLabel } from "./StyledInput";
+import { determineValidatedSelectStyle} from "../../utils/DetermineStyleUtils";
 
 interface ValidatedDateSelectorProps{
     style:string;
@@ -11,6 +12,10 @@ interface ValidatedDateSelectorProps{
 export const ValidatedDateSelector:React.FC<ValidatedDateSelectorProps> = (props: ValidatedDateSelectorProps) => {
     const [active, setActive] = React.useState<boolean>(false);
     const [value, setValue] = React.useState<number>(0);
+    const [color, setColor] = React.useState<string>('gray');
+    React.useEffect(() => {
+        setColor(determineValidatedSelectStyle(active, props.valid));
+    }, [active, props.valid, value]);
     const changeValue = (e:React.ChangeEvent<HTMLSelectElement>) => {
         console.log("Dispatch this change to a reducer");
         console.log('value: ' + e.target.value);
@@ -22,7 +27,7 @@ export const ValidatedDateSelector:React.FC<ValidatedDateSelectorProps> = (props
     return (
         <div  className={props.style}>
             <StyledInputBox active={active} valid={props.valid}>
-                <StyledInputLabel color="gray" active={true} valid={props.valid}>
+                <StyledInputLabel color={color} active={true} valid={props.valid}>
                     {props.name}
                 </StyledInputLabel>
                 <select onChange={changeValue} onFocus={toggleActive} onBlur={toggleActive}>
