@@ -45,6 +45,7 @@ export const RegisterSlice = createSlice({
             } else {
                 state= { ...state, [name]: value}
             }
+            console.log('Updating the global state: ', state);
             return state;
         }
     }

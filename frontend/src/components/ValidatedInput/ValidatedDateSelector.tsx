@@ -6,7 +6,8 @@ interface ValidatedDateSelectorProps{
     style:string;
     valid:boolean;
     name:string;
-    dropDown():JSX.Element[]
+    dropDown():JSX.Element[];
+    dispatcher(name: string, value: string | number | boolean): void;
 }
 
 export const ValidatedDateSelector:React.FC<ValidatedDateSelectorProps> = (props: ValidatedDateSelectorProps) => {
@@ -17,9 +18,10 @@ export const ValidatedDateSelector:React.FC<ValidatedDateSelectorProps> = (props
         setColor(determineValidatedSelectStyle(active, props.valid));
     }, [active, props.valid, value]);
     const changeValue = (e:React.ChangeEvent<HTMLSelectElement>) => {
+        setValue(+e.target.value); // + changes Change event's value to number in  ts
         console.log("Dispatch this change to a reducer");
         console.log('value: ' + e.target.value);
-        setValue(+e.target.value); // + changes Change event's value to number in  ts
+        props.dispatcher(props.name.toLowerCase(), + e.target.value);
     }
     const toggleActive = (e:React.FocusEvent<HTMLSelectElement>) => {
         setActive(!active);
