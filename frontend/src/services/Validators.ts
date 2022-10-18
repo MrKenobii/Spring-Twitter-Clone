@@ -17,5 +17,26 @@ export const validateDob = (dob: Dob): boolean => {
         return false;
     else if((month === 4 || month === 6 || month === 9 || month === 11) && day> 30)
         return false;
-    return true;
+    return checkAge(dob);
+}
+const checkAge = (dob: Dob): boolean => {
+    let {month, day, year } = dob;
+    let today = new Date();
+    let todaysYear = today.getFullYear();
+    let todaysMonth = today.getMonth();
+    let todaysDay = today.getDate();
+
+    if(todaysYear - year > 13)
+        return true;
+    else if(todaysYear - year === 13){
+        if(todaysMonth > month)
+            return true;
+        else if(todaysMonth === month){
+            if(todaysDay >= day)
+                return true;
+            else return false;
+        }
+    }
+    return false;
+
 }
